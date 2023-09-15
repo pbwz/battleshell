@@ -67,9 +67,10 @@ class Game:
         self.opp_hit_count = 0
 
     ### REGULAR METHODS ###
-        
     def verify_settings(self,opp,b_size,ship_list,ai_diff):
-        '''Makes sure the settings entered for the game are valid'''
+        '''
+        Makes sure the settings entered for the game are valid
+        '''
         # opponent check
         if opp not in (0,1):
             raise Exception('Game Error: Opponent not set')
@@ -85,7 +86,6 @@ class Game:
         if ai_diff not in range(1,4):
             raise Exception('Game Error: AI Difficulty not set')
         
-        
     def verify_ships(self, ship_list, b_size):
         '''
         Verifies that ship list is valid
@@ -99,7 +99,6 @@ class Game:
         if len(ship_list) > b_size:   # checks for total ships
             raise Exception('Game Error: Too many ships for this board size')
         
-        
     def start_game(self):
         '''
         Starts the game and needed portions
@@ -112,13 +111,13 @@ class Game:
             raise Exception('Game Error: Starter not set!')
         else:
             self.turn = self.starter
-        
+
+       # starts with ai/waits for player 2
         if self.opponent == 0:
             self.start_ai()
             return 'Game starting!'
         else:
             return 'Waiting for opponent!'
-        
         
     def update_board(self,board,cells,cell_type):
         '''
@@ -128,7 +127,6 @@ class Game:
             row,col = self.num_to_matrix(cell)
             board[row][col] = cell_type
 
-
     def get_curr_board(self):
         '''
         Returns the board corresponding to the current turn
@@ -137,7 +135,6 @@ class Game:
         if self.turn == 0:
             return self.shot_board
         return self.own_board
-
     
     def set_opponent_shot(self, shot):
         '''
@@ -145,7 +142,6 @@ class Game:
         '''
         shot = self.shot_input_verify(shot)
         return self.opponent_fire(shot)
-    
     
     def set_opponent_ships(self, ship_list):
         '''
@@ -168,7 +164,6 @@ class Game:
             self.opp_indiv_ships.append(ship)
             for cell in ship:
                 self.opp_ship_cells.append(cell)
-        
     
     def get_ai_shot(self):
         '''
@@ -184,7 +179,6 @@ class Game:
         
         shot = self.ai.get_shot()
         return self.opponent_fire(shot)   # shoots
-
         
     def opponent_fire(self, cell):
         '''
@@ -215,11 +209,12 @@ class Game:
             result = f'{self.opp_name} missed!'
         self.turn = 0
         return result 
-
     
     def check_sunk(self):
-        '''Checks if any ship was sunk when called, must be called
-        after a player has shot but still in the same turn.'''
+        '''
+        Checks if any ship was sunk when called, must be called
+        after a player has shot but still in the same turn.
+        '''
         # determines last shooter info
         if self.turn == 0:   # player
             ships = self.opp_indiv_ships
@@ -242,12 +237,13 @@ class Game:
             return f'Your ship was sunk! ({sunk_len})'
         return False
     
-    
     def check_game_over(self):
-        '''Checks if anyone won the game off of the last move
+        '''
+        Checks if anyone won the game off of the last move
         0 - no winner
         1 - player wins
-        2 - ai wins'''
+        2 - ai wins
+        '''
         if self.phase == 2:
             if len(self.individual_locations) == 0:
                 self.phase = 3
@@ -258,9 +254,10 @@ class Game:
                 return 'You won the game!'
         return False
     
-    
     def start_ai(self):
-        '''Starts AI with all needed game info'''
+        '''
+        Starts AI with all needed game info
+        '''
         try:
             self.ai = WaveWatch(self.ai_diff,self.b_size,self.ship_sizes)
             self.ai.start()
@@ -268,20 +265,17 @@ class Game:
         except:
             raise Exception('Game Error: AI object failed to start')
         
-        
     def get_phase(self):
         '''
         Returns the games current phase value
         '''
         return self.phase
-    
         
     def get_turn(self):
         '''
         Returns the games current turn
         '''
         return self.turn
-    
     
     def set_turn(self, turn):
         '''
@@ -292,13 +286,11 @@ class Game:
             raise Exception('Game Error: Tried setting illegal turn (not in 0,1)')
         self.turn = turn
         
-        
     def get_own_ships(self):
         '''
         Returns a list containg all of the player's ships
         '''
         return self.individual_locations
-        
         
     def set_starter(self, starter):
         '''Sets who starts the game'''
@@ -306,7 +298,6 @@ class Game:
         if starter not in (0,1):
             raise Exception('Game Error: Tried setting illegal starter (not in 0,1)')
         self.starter = starter
-        
     
     def get_boards(self, choice=2):
         '''
@@ -317,7 +308,6 @@ class Game:
         elif choice == 1:   # return shot board
             return self.shot_board
         return self.own_board   # return player board
-    
         
     def build_matrix(self):
         '''
@@ -334,33 +324,35 @@ class Game:
                 self.own_board = matrix
             else:
                 self.shot_board = matrix
-                
             
     def matrix_to_num(self,row:int,col:int) -> int:
-        '''Converts matrix positions into actual grid cells from
-        1 to the size of the actual board'''
+        '''
+        Converts matrix positions into actual grid cells from
+        1 to the size of the actual board
+        '''
         row_num = row * self.b_size
         decoded_number = row_num + col
         return decoded_number
     
-    
     def num_to_matrix(self,position:int) -> tuple:
-        '''Converts grid cells to matrix rows and columns
-        based on the size of the board'''
+        '''
+        Converts grid cells to matrix rows and columns
+        based on the size of the board
+        '''
         row = (position)//self.b_size
         column = (position)%self.b_size
         return row, column
     
-    
     def let_num_to_num(self,str_let_num):
-        '''Accepts a letter and number only! Converts to a number
-        position somewhere on the grid.'''
+        '''
+        Accepts a letter and number only! Converts to a number
+        position somewhere on the grid
+        '''
         for letter in ALPHABET:
             if str_let_num[0] == letter:
                 index = ALPHABET.index(letter)*self.b_size
         decoded_number = index + int(str_let_num[1:])-1
         return decoded_number
-    
     
     def shot_input_verify(self, shot):
         '''
@@ -388,14 +380,12 @@ class Game:
             
         raise Exception(format_msg)
     
-    
     def set_shot(self, shot):
         '''
         Fires player's shot, converts if possible
         '''
         shot = self.shot_input_verify(shot)
         return self.fire(shot)
-    
     
     def reveal_ship(self):
         '''
@@ -406,7 +396,6 @@ class Game:
                 row, col = self.num_to_matrix(cell)
                 if self.shot_board[row][col] != 2:
                     self.shot_board[row][col] = 3
-    
     
     def fire(self, cell):
         '''
@@ -436,7 +425,6 @@ class Game:
             result = 'You missed!'
         self.turn = 1
         return result
-        
     
     def get_stats(self):
         '''
@@ -460,10 +448,7 @@ class Game:
             
         return str(hit_perc), str(self.shot_count), str(opp_hit_perc), opp_ships
             
-            
     ### SHIP PLACEMENT METHODS ###
-            
-            
     def randomize_placement(self,ship_len):
         '''
         Returns a randomly selected legal set of cells to place
@@ -485,7 +470,6 @@ class Game:
                 return cells
         raise Exception('Error: No space for remaining ships!')
     
-    
     def get_ship_cells(self,row,col,orientation,length):
         '''Returns all occupied ship cells based on ships data'''
         cells = [self.matrix_to_num(row,col)]   # adds first cell
@@ -504,7 +488,6 @@ class Game:
             else:
                 cells.append(self.matrix_to_num(static,dynamic))
         return cells
-            
         
     def start_place_ship(self):
         '''
@@ -522,7 +505,6 @@ class Game:
         self.update_board(board,cells,PLACING)
         self.last_placement = cells[:]
         
-        
     def place_ship(self):
         '''
         Places the ship on the board when Player is happy with
@@ -530,22 +512,26 @@ class Game:
         '''
         ship_cells = self.last_placement
         player_cells = self.player_cells
-        if not self.is_ship_overlap(ship_cells,player_cells):
+
+        # no overlap case
+        if not self.is_ship_overlap(ship_cells,player_cells): 
             self.ships_to_place -= 1
             self.update_board(self.own_board, ship_cells, FRIENDLY)
             self.individual_locations.append(ship_cells)
             self.player_cells = player_cells + ship_cells
-            if self.ships_to_place == 0:
+
+            if self.ships_to_place == 0:  # done placing
                 if self.ai:
                     self.ai.set_player_pos(self.individual_locations,self.player_cells)
                 self.phase = 2
                 return 'Done placing!'
-            return 'Ship placed successfully!'
+            return 'Ship placed successfully!'  # more to place
+
+        # overlap case
         else:
             self.update_board(self.own_board, self.last_placement, EMPTY)
             self.update_board(self.own_board, self.player_cells, FRIENDLY)
             return 'Ships cannot overlap!'
-        
         
     def check_out_of_bounds(self,cell_list):
         '''
@@ -575,7 +561,6 @@ class Game:
             if col >= self.b_size or 0 > col:
                 return True
         return False
-    
         
     def check_orientation(self,cell_list):
         '''
@@ -591,9 +576,10 @@ class Game:
         else:
             return 'h'
         
-        
     def move_ship(self,command):
-        '''Moves ship based on direction or places ship'''
+        '''
+        Moves ship based on direction or places ship
+        '''
         attempted_pos = self.last_placement[:]   # copy in case illegal
         if command == 'rotate':
             response = self.rotate(attempted_pos)
@@ -616,34 +602,40 @@ class Game:
         else:
             return OOB_MSG
         
-        
     def is_ship_overlap(self,indiv_ship,group_ships):
-        '''Checks if the cells of an individual ship are inside of
-        a larger group of ship cells. If overlap, return True'''
+        '''
+        Checks if the cells of an individual ship are inside of
+        a larger group of ship cells. If overlap, return True
+        '''
         for cell in indiv_ship:
             if cell in group_ships:
                 return True
         return False
-        
             
     def execute_move(self,new_pos):
-        '''Now that move has been processed and verified,
-        updates board'''
+        '''
+        Now that move has been processed and verified,
+        updates board
+        '''
         board = self.own_board
         self.update_board(board,self.last_placement,EMPTY)
         self.update_board(board,new_pos,PLACING)
         self.update_board(self.own_board, self.player_cells, FRIENDLY)
         self.last_placement = new_pos   # keeps track of this as last move
         
-        
     def rotate(self,cell_list):
-        '''Rotates ship currently being placed'''
+        '''
+        Rotates ship currently being placed
+        '''
         orientation = self.check_orientation(cell_list)
+
+        # convert to matrix rows, cols for math
         rows, cols = [], []
         for pos in cell_list:
             row, col = self.num_to_matrix(pos)
             rows.append(row), cols.append(col)
-            
+
+        # orientation change math
         if orientation == 'v':
             for i in range(len(rows)):
                 cols[i] = cols[0] + i
@@ -652,11 +644,13 @@ class Game:
             for i in range(len(rows)):
                 rows[i] = rows[0] + i
                 cols[i] = cols[0]  
-                
+
+        # convert back to grid numbers
         new_cells = []
         for i in range(len(cell_list)):
             cell = self.matrix_to_num(rows[i],cols[i])
             new_cells.append(cell)
-        
+
+        # execute if legal
         if not self.check_out_of_bounds(new_cells):
             self.execute_move(new_cells)
