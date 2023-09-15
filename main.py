@@ -650,7 +650,6 @@ class GameScreen(Screen):
         self.ids.btn_fire.icon = 'autorenew'
         self.ids.btn_fire.md_bg_color = 'lime'
 
-
 class SettingsScreen(Screen):
     def on_pre_enter(self, *args):
         '''
@@ -861,7 +860,6 @@ class SettingsScreen(Screen):
         else:
             message = 'There was a problem applying\nthe following setting(s):'
             self.ok_dialog(message,problem)
-
 
 class MultiplayerScreen(Screen):
     def validate_name(self):
