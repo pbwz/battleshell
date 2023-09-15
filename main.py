@@ -60,14 +60,14 @@ class GameScreen(Screen):
         self.ids.btn_fire.md_bg_color = "#fc5c65"
         self.ids.btn_fire.icon = "crosshairs-gps"
         
-    
     def start_keyboard(self):
         '''
         Sets up keyboard movement
+
+        Keyboard movement adapted from: toto_tico (stackoverflow)
         '''
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
-        
         
     def _keyboard_closed(self):
         '''
@@ -75,7 +75,6 @@ class GameScreen(Screen):
         '''
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
-        
         
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         '''
@@ -107,10 +106,11 @@ class GameScreen(Screen):
                 self.update_board(game.get_boards(0),'Placing Phase')
             return True
         
-        
     def check_ready(self):
-        '''Checks if other player has placed all ships before
-        fully starting the multiplayer game'''
+        '''
+        Checks if other player has placed all ships before
+        fully starting the multiplayer game
+        '''
         if self.ready:
             if self.opponent_ships != []:
                 self.game.set_opponent_ships(self.opponent_ships)
@@ -119,9 +119,10 @@ class GameScreen(Screen):
                 self.update_board(self.game.get_boards(0),'Waiting...')
                 self.ids.helper_text.text = 'Opponent is placing'
         
-        
     def start_game(self):
-        '''Starts game once player has placed all ships'''
+        '''
+        Starts game once player has placed all ships
+        '''
         app = App.get_running_app()
         self.ready = True
         
@@ -153,7 +154,6 @@ class GameScreen(Screen):
                 self.game.set_turn = self.get_starter(1)
             self.flip_coin()
         
-        
     def get_starter(self, randomize):
         '''
         Returns the starter for the current game
@@ -162,7 +162,6 @@ class GameScreen(Screen):
             return 0
         else:
             return random.randint(0,1)
-            
             
     def flip_coin(self):
         '''
@@ -179,7 +178,7 @@ class GameScreen(Screen):
             self.ids.helper_text.text = 'Flipping coin...'
             
         Clock.schedule_once(self.flip_coin_2, 3)
-        
+
     def flip_coin_2(self,dt):
         '''
         Announces the result of the coin flip after 2 seconds.
@@ -197,17 +196,19 @@ class GameScreen(Screen):
         self.notification_box(msg)
         self.ids.helper_text.text = win_loss_msg
             
-        self.game_loop(1)
-            
-        
+        self.game_loop(1) 
+
     def set_in_progress(self,dt):
-        '''Sets the games state to in progress'''
+        '''
+        Sets the games state to in progress
+        '''
         app = App.get_running_app()
         app.in_progress = True
         
-        
     def load_game(self, dt):
-        '''Loads game with valid settings'''
+        '''
+        Loads game with valid settings
+        '''
         app = App.get_running_app()
         self.populate_board(0)
         
@@ -236,9 +237,10 @@ class GameScreen(Screen):
             self.ids.helper_text.text = 'WASD / R / Enter'
             self.update_stats()
     
-            
     def update_stats(self):
-        '''Updates stat section of screen with newest info'''
+        '''
+        Updates stat section of screen with newest info
+        '''
         game = self.game
         
         try:
@@ -252,9 +254,10 @@ class GameScreen(Screen):
         self.ids.ai_hit_p.text = ai_hit_p
         self.ids.ai_ship_count.text = ai_ships
         
-            
     def new_game(self):
-        '''Starts new game'''
+        '''
+        Starts new game
+        '''
         self.ids.btn_fire.md_bg_color = "#fc5c65"
         self.ids.btn_fire.icon = "crosshairs-gps"
         Clock.schedule_once(self.game_settings)
@@ -263,10 +266,11 @@ class GameScreen(Screen):
         self.start_keyboard()
         
         self.notification_box('New game starting!')
-        
-        
+              
     def game_loop(self, wait=0):
-        '''Main game loop'''
+        '''
+        Main game loop
+        '''
         app = App.get_running_app()
         if wait == 0:
             wait = app.game_delay
@@ -275,14 +279,8 @@ class GameScreen(Screen):
         if self.game.get_turn() == 1:
             if not app.server_started:
                 Clock.schedule_once(self.ai_response,wait + 0.75)
-
                 
-                
-    
-            
-    
     ### MULTIPLAYER ###
-    
     def game_settings(self, dt):
         '''
         Changes current game settings between AI and
@@ -310,15 +308,12 @@ class GameScreen(Screen):
                 self.opponent_ships = []
                 self.ai_diff = 1
                 self.randomize = app.randomize
-    
-    
-    '''
-    GAME RELATED
-    Keyboard movement adapted from: toto_tico (stackoverflow)
-    '''
-        
+
+    ### GAME RELATED ###
     def ai_response(self,dt):
-        '''Gets AI shot and displays to player'''
+        '''
+        Gets AI shot and displays to player
+        '''
         app = App.get_running_app()
         
         result = self.game.get_ai_shot()
@@ -331,9 +326,11 @@ class GameScreen(Screen):
         else:
             self.ids.helper_text.text = result
             Clock.schedule_once(self.opp_done,app.game_delay + 0.5)
-            
+
     def opp_response(self, cell):
-        '''Fires opponent shot on players screen'''
+        '''
+        Fires opponent shot on players screen
+        '''
         app = App.get_running_app()
         
         result = self.game.set_opponent_shot(cell)
@@ -346,15 +343,18 @@ class GameScreen(Screen):
             self.ids.helper_text.text = result
             Clock.schedule_once(self.opp_done,app.game_delay + 0.5)
 
-        
     def opp_done(self,dt):
-        '''Handles reset back to player shot after AI shot'''
+        '''
+        Handles reset back to player shot after AI shot
+        '''
         self.update_board(self.game.get_boards(1),'Your Turn')
         self.ids.helper_text.text = 'Good luck!'
         self.displayed_board = 1
             
     def handle_turns(self,dt):
-        '''Handles changing turns after each shot'''
+        '''
+        Handles changing turns after each shot
+        '''
         app = App.get_running_app()
         game = self.game
         turn = game.get_turn()
@@ -365,7 +365,11 @@ class GameScreen(Screen):
             self.update_board(board,f'{app.opp_name}')
     
     def update_board(self,information,player):
-        '''When called updates the entirety of the board'''
+        '''
+        When called updates the entirety of the board cells with
+        the information provided (ie. hits, missed, etc.) and changes
+        turn text.
+        '''
         app = App.get_running_app()
         self.active_board_message = player
         board_dict = self.board_dict
@@ -398,16 +402,18 @@ class GameScreen(Screen):
         self.turn_box(player)
         self.update_stats()
         
-    '''
-    SCREEN RELATED
-    '''   
+    ### GUI RELATED ###
     def dismiss_dialog(self):
-        '''Closes open dialogs'''
+        '''
+        Closes open dialogs
+        '''
         if self.dialog:
             self.dialog.dismiss(force=True)
         
     def resign(self):
-        '''Resignation handling'''
+        '''
+        Resignation handling
+        '''
         rsn = MDRaisedButton(
             text="RESIGN", md_bg_color='#fc5c65')
         cancel = MDRaisedButton(
@@ -426,6 +432,9 @@ class GameScreen(Screen):
         self.dialog.open()
         
     def switch_view(self):
+        '''
+        Handles logic for switching between board views.
+        '''
         app = App.get_running_app()
         game = self.game
         boards = game.get_boards()
@@ -434,7 +443,8 @@ class GameScreen(Screen):
         single_player = game.get_turn() == 0 and game.get_phase() != 1
         ended = game.get_phase() == 3
         multi_player = app.server_started and game.get_phase() != 1
-        
+
+        # chance view based on case
         if single_player or multi_player or ended:
             if self.displayed_board == 1:
                 self.displayed_board = 0
@@ -450,11 +460,16 @@ class GameScreen(Screen):
             self.notification_box('Cannot view until your turn')
             
     def turn_box(self,text):
-        '''Allows updates to the turn/information box'''
+        '''
+        Allows updates to the turn/information box
+        '''
         self.ids.turn_text.title = text
     
     def notification_box(self,text):
-        '''Allows small text notifications'''
+        '''
+        When called creates a small textbox (SnackBar) and
+        displays whatever text is passed
+        '''
         if not self.current_not:
             notification = Snackbar(
                 text=text,
@@ -470,22 +485,30 @@ class GameScreen(Screen):
             Clock.schedule_once(self.dismiss_notification, 1)
         
     def dismiss_notification(self, dt):
-        '''Dismisses notification box'''
+        '''
+        Dismisses notification box
+        '''
         if self.current_not:
             self.current_not.dismiss()
             self.current_not = None
 
     def refocus_box(self, *args):
-        '''Refocuses coords box after pressing enter'''
+        '''
+        Refocuses coords box after pressing enter
+        '''
         self.ids.coord_box.focus = True
         
     def get_box_text(self):
-        '''Get coord input and empty box'''
+        '''
+        Get coord input and empty box
+        '''
         self.fire_btn()
         Clock.schedule_once(self.refocus_box)
             
     def populate_board(self, dt):
-        '''Fills in Game Board based off of settings'''
+        '''
+        Fills in Game Board based off of settings
+        '''
         app = App.get_running_app()
         if not app.in_progress:
             self.remove_grid()
@@ -515,7 +538,9 @@ class GameScreen(Screen):
                     grid_layout.add_widget(button)
             
     def update_box_text(self,string):
-        '''Updates coord box text'''
+        '''
+        Updates coord box text
+        '''
         self.ids.coord_box.text = string
         if self.last_press and string != '':
             if self.last_press == string:
@@ -526,13 +551,17 @@ class GameScreen(Screen):
         self.last_press = string
     
     def remove_grid(self):
-        '''Clears entire board.'''
+        '''
+        Clears entire board
+        '''
         rows = [i for i in self.ids.board_layout.children]
         for row1 in rows:
             self.ids.board_layout.remove_widget(row1)
             
     def verify_coords(self,coords):
-        '''Verifies input of entered coords'''
+        '''
+        Verifies input of entered coords
+        '''
         if len(coords) > 3:
             return False
         if coords[0] not in ALPHABET:
@@ -550,7 +579,9 @@ class GameScreen(Screen):
         return True  
 
     def fire_btn(self):
-        '''Handles all logic for fire button'''
+        '''
+        Handles all logic for fire button
+        '''
         app = App.get_running_app()
         coords = self.ids.coord_box.text.upper()
         if self.start_new:
@@ -590,10 +621,14 @@ class GameScreen(Screen):
             self.notification_box('Wrong board!')
             
     def game_over(self, mode=0, result=None):
-        '''Runs when someone wins the game'''
+        '''
+        Runs when the game ends, whether someone wins or
+        whether someone resigns
+        '''
         app = App.get_running_app()
         self.update_board(self.game.get_boards(self.displayed_board),'Game Over!')
-        
+
+        # resignation/winner result logic
         if mode == 0:
             if result != None:
                 message = result
@@ -615,12 +650,16 @@ class GameScreen(Screen):
         self.ids.btn_fire.icon = 'autorenew'
         self.ids.btn_fire.md_bg_color = 'lime'
 
+
 class SettingsScreen(Screen):
     def on_pre_enter(self, *args):
-        '''Sets settings properly on open'''
+        '''
+        Sets settings properly on open
+        '''
         app = App.get_running_app()
         self.ids.ship_list.clear_widgets()
-        
+
+        # build custom ship list cells
         for ship in app.ships:
             line_item = OneLineAvatarIconListItem(
                         IconLeftWidget(icon="sail-boat"))
@@ -628,7 +667,8 @@ class SettingsScreen(Screen):
             self.ids.ship_list.add_widget(line_item)
             line_item.text = str(ship)
             line_item.bind(on_release=lambda instance, x=line_item: self.pop_list(x))
-            
+
+        # fill in rest of settings with up-to-date info
         self.ids.b_size.text = str(app.b_size)
         self.ids.ai_diff.text = str(app.ai_diff)
         if app.randomize:
@@ -644,7 +684,9 @@ class SettingsScreen(Screen):
         self.clicked_icon(app.game_icon)
             
     def pop_list(self, line_item):
-        '''Shows dialog when removing ship from game settings'''
+        '''
+        Shows dialog when removing ship from game settings
+        '''
         confirm = MDRaisedButton(
             text="YES", md_bg_color='limegreen', font_size='20dp')
         
@@ -662,7 +704,9 @@ class SettingsScreen(Screen):
         ask.open()
         
     def add_list(self):
-        '''Adds new ship to list based on size'''
+        '''
+        Adds new ship to list based on size
+        '''
         size = self.ids.ship_size.text
         line_item = OneLineAvatarIconListItem(
                 IconLeftWidget(icon="sail-boat"))
@@ -677,7 +721,10 @@ class SettingsScreen(Screen):
         line_item.bind(on_release=lambda instance, x=line_item: self.pop_list(x))
         
     def ok_dialog(self, title, message):
-        '''Shows dialog about invalid settings inputted'''
+        '''
+        Creates a dialog that does nothing. Confirmation dialog.
+        Title and message can be given.
+        '''
         confirm = MDRaisedButton(
             text="OK", md_bg_color='limegreen', font_size='20dp')
         
@@ -693,7 +740,9 @@ class SettingsScreen(Screen):
         ask.open()
         
     def set_settings(self,b_size,ai_diff):
-        '''Globally sets all valid settings to the settings'''
+        '''
+        Globally sets all valid settings to the settings
+        '''
         app = App.get_running_app()
         
         # sets other variables and values
@@ -714,7 +763,8 @@ class SettingsScreen(Screen):
         delay = app.game_delay
         icon = app.game_icon
         self.write_settings(b_size,ai_diff,randomize,custom_ships,new_list,delay,icon)
-        
+
+        # ends game if not multiplayer
         if app.server_started:
             self.ok_dialog('Settings applied!','Your game was not ended')
         else:
@@ -723,7 +773,9 @@ class SettingsScreen(Screen):
 
         
     def write_settings(self,b_size,ai_diff,rand,cust,ships,delay,icon):
-        '''Writes all the valid settings to the settings.txt file'''
+        '''
+        Writes all the valid settings to the settings.txt file
+        '''
         with open(SETTINGS_FILE, 'w') as settings:
             settings.write(f'B_SIZE: {b_size}\n')
             settings.write(f'RANDOMIZE: {rand}\n')
@@ -734,13 +786,18 @@ class SettingsScreen(Screen):
             settings.write(','.join(str(i) for i in ships))
             
     def clicked_icon(self, number):
-        '''For selecting which icon is clicked in settings'''
+        '''
+        For selecting which icon is clicked in settings
+        '''
         app = App.get_running_app()
         selected = app.theme_cls.primary_color
+
+        # resets all icons to white
         self.ids.icon_0.background_color = (1, 1, 1, 1)
         self.ids.icon_1.background_color = (1, 1, 1, 1)
         self.ids.icon_2.background_color = (1, 1, 1, 1)
-        
+
+        # highlights chosen icon
         if number == 0:
             self.ids.icon_0.background_color = selected
         elif number == 1:
@@ -749,25 +806,32 @@ class SettingsScreen(Screen):
             self.ids.icon_2.background_color = selected
     
     def apply_extra_settings(self):
-        '''Applies the extra game (quality of life) settings'''
+        '''
+        Applies the extra game (quality of life) settings
+        '''
         app = App.get_running_app()
         delay = int(self.ids.delay.value)
         app.game_delay = delay
+
+        # find which icon is highlighted
         if self.ids.icon_0.background_color == app.theme_cls.primary_color:
             icon = 0
         elif self.ids.icon_1.background_color == app.theme_cls.primary_color:
             icon = 1
         else:
             icon = 2
-            
+
+        # write to settings
         app.game_icon = icon
         self.write_settings(app.b_size, app.ai_diff, app.randomize, app.custom_ships, app.ships, delay, icon)
-        
         self.ok_dialog('Settings applied!','Icon changes will apply next move')
         
     def verify_settings(self):
-        '''Checks if all new settings values are valid'''
-        problem = ''
+        '''
+        Checks if all new settings values are valid
+        '''
+        problem = ''  # assumtes no problem
+        
         new_bsize = self.ids.b_size.text
         try:   # validates board size
             new_bsize = int(new_bsize)
@@ -780,6 +844,7 @@ class SettingsScreen(Screen):
         except: 
             problem = 'Board Size'
         ai_diff = self.ids.ai_diff.text
+        
         try:   # validates AI difficulty
             ai_diff = int(ai_diff)
             if ai_diff not in range(1,4):
@@ -796,16 +861,21 @@ class SettingsScreen(Screen):
         else:
             message = 'There was a problem applying\nthe following setting(s):'
             self.ok_dialog(message,problem)
-            
+
+
 class MultiplayerScreen(Screen):
     def validate_name(self):
-        '''Checks if user entered a name'''
+        '''
+        Checks if user entered a name
+        '''
         if self.ids.multi_name.text == '':
             return 'Enter a name first!'
         return True
 
     def host(self):
-        '''Controls host button'''
+        '''
+        Controls host button logic
+        '''
         app = App.get_running_app()
         display_text = self.ids.host.text
         if display_text == 'Host Game':
@@ -831,8 +901,11 @@ class MultiplayerScreen(Screen):
             self.reset_multi()
             
     def reset_multi(self):
-        '''Resets multiplayer for client and server'''
+        '''
+        Resets multiplayer for client and server
+        '''
         app = App.get_running_app()
+        
         # reset graphics
         self.ids.host.text = 'Host Game'
         self.ids.host.md_bg_color = app.theme_cls.primary_color
@@ -860,7 +933,9 @@ class MultiplayerScreen(Screen):
         app.opp_name = None
         
     def update_host(self, dt):
-        '''Handles all information received from connected client'''
+        '''
+        Handles all information received from connected client
+        '''
         app = App.get_running_app()
         
         # wait for connection
@@ -886,7 +961,9 @@ class MultiplayerScreen(Screen):
                     self.handle_received(ident, data)
                     
     def handle_received(self,ident,data):
-        '''Handles any received response from opponent'''
+        '''
+        Handles any received response from opponent
+        '''
         if ident == 'B_SIZE':
             self.ids.multi_b_size.text = data
         if ident == 'GAME_INFO':
@@ -902,7 +979,9 @@ class MultiplayerScreen(Screen):
             self.manager.get_screen('sc_game').game_over(1)
         
     def start_client(self):
-        '''Starts clients connection to host'''
+        '''
+        Starts clients connection to host
+        '''
         app = App.get_running_app()
         display_text = self.ids.connect.text
         if display_text == 'Connect to Game':
@@ -929,11 +1008,12 @@ class MultiplayerScreen(Screen):
                     app.in_progress = False  
                 
         else:
-            
             self.reset_multi()
         
     def update_client(self, dt):    
-        '''Handles all information received from host'''
+        '''
+        Handles all information received from host
+        '''
         app = App.get_running_app() 
         
         # opponent response
@@ -950,7 +1030,9 @@ class MultiplayerScreen(Screen):
                     self.handle_received(ident, data)
                     
     def handle_status(self, data):
-        '''Handles status data sent through socket'''
+        '''
+        Handles status data sent through socket
+        '''
         if data == 'Disconnected':
             self.manager.get_screen('sc_game').notification_box('P2 Disconnected')
             self.manager.get_screen('sc_game').game_over(1)
@@ -973,7 +1055,8 @@ class BattleShell(MDApp):
         self.server_started = False
         self.opp_name = None
         self.my_name = None
-        
+
+        # reads file and gets data
         with open(SETTINGS_FILE, 'r') as settings:
             data = settings.readlines()
             for i in range(len(data)):
@@ -990,6 +1073,7 @@ class BattleShell(MDApp):
                     self.ships.append(int(ship))
             except:
                 raise Exception('Settings file formatted incorrectly!')
-        
+
+
 if __name__ == '__main__':
     BattleShell().run()
