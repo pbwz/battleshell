@@ -1,0 +1,578 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+
+<GameScreen>:
+    name: "sc_game"
+
+    MDBoxLayout:
+        orientation: 'horizontal'
+
+        MDGridLayout:
+            size_hint: 3, 1
+            md_bg_color: '#4b6584'
+            id: board_layout
+            padding: dp(12)
+            spacing: dp(3)
+
+        MDBoxLayout:
+            id: side_layout
+            orientation: 'vertical'
+            spacing: dp(12)
+            md_bg_color: '#a5b1c2'
+
+            MDBoxLayout:
+                size_hint_y: .05
+
+            MDTopAppBar:
+                anchor_title: 'center'
+                id: turn_text
+                elevation: 0
+                pos_hint: {'center_y': .2}
+                title: "Placing Phase"
+                md_bg_color: '#fd9644'
+
+            MDLabel:
+                id: helper_text
+                halign: "center"
+                font_style: 'H6'
+                text: ''
+
+            MDBoxLayout:
+                size_hint_y: .05
+
+            MDTextField:
+                hint_text:"  Coordinates (A4)"
+                max_text_length: 3
+                on_text_validate: root.get_box_text()
+                mode: "rectangle"
+                font_size: coord_box.height/3
+                line_color_normal: "white"
+                hint_text_color_normal: "white"
+                text_color_normal: '#2d98da'
+                id: coord_box
+                size_hint: (0.975,side_layout.height/2000)
+                pos_hint: {'center_x': .5}
+
+            MDBoxLayout:
+                size_hint_y: .05
+
+            MDFloatingActionButton:
+                type: 'small'
+                elevation: 0
+                id: btn_fire
+                icon: "crosshairs-gps"
+                size_hint: (0.9,side_layout.height/2500)
+                on_release: root.fire_btn()
+                md_bg_color: "#fc5c65"
+                pos_hint: {'center_x': .5}
+
+            MDBoxLayout:
+                size_hint_y: .5
+
+            MDBoxLayout:
+                id: box_wid
+                orientation: 'vertical'
+
+                MDLabel:
+                    text: 'Stats'
+                    halign: 'center'
+                    font_style: 'H6'
+
+                MDBoxLayout:
+                    orientation: 'horizontal'
+
+                    MDLabel:
+                        text: '  HIT %:'
+                    MDLabel:
+                        id: hit_p
+                        halign: 'center'
+                        text: 'N/A'
+
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    
+                    MDLabel:
+                        text: '  OPP HIT %:'
+                    MDLabel:
+                        id: ai_hit_p
+                        halign: 'center'
+                        text: 'N/A'
+
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    
+                    MDLabel:
+                        text: '  SHOTS:'
+                    MDLabel:
+                        id: shot_count
+                        halign: 'center'
+                        text: 'N/A'
+
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    
+                    MDLabel:
+                        text: '  OPP SHIPS:'
+                    MDLabel:
+                        id: ai_ship_count
+                        halign: 'center'
+                        text: 'N/A'
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+                md_bg_color: "#263238"
+                size_hint: (1,side_layout.height/3000)
+
+                MDFloatingActionButton:
+                    icon: 'eye'
+                    theme_icon_color: "Custom"
+                    icon_color: "#2d98da"
+                    type: 'small'
+                    elevation: 0
+                    pos_hint: {'center_x': .5}
+                    id: btn_swap
+                    on_release: root.switch_view()
+                    size_hint: (1,1)
+                    md_bg_color: "#263238"
+
+                MDFloatingActionButton:
+                    icon: 'flag'
+                    theme_icon_color: "Custom"
+                    icon_color: "orange"
+                    type: 'small'
+                    elevation: 0
+                    pos_hint: {'center_x': .5}
+                    id: btn_resign
+                    size_hint: (1,1)
+                    on_release: root.resign()
+                    md_bg_color: "#263238"
+
+<SettingsScreen>:
+    name: "sc_settings"
+
+    MDBoxLayout:
+        orientation: 'horizontal'
+        md_bg_color: '#4b6584'
+        padding: dp(12)
+        spacing: dp(12)
+
+        MDBoxLayout:
+            radius: [25, 0, 0, 25]
+            orientation: 'vertical'
+            md_bg_color: '#343131'
+
+            MDTopAppBar:
+                title: 'Game Options'
+                anchor_title: 'center'
+                elevation: 0
+                pos_hint: {'center_y': .2}
+                md_bg_color: '#fd9644'
+
+            MDBoxLayout:
+                size_hint_y: 0.2
+                orientation: 'horizontal'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                
+                    MDLabel:
+                        text: 'Board Size (2-26)'
+                        halign: 'center'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+
+                    MDTextField:
+                        text: ''
+                        id: b_size
+                        pos_hint: {'center_x': .5,'center_y': .5}
+                        size_hint_x: (0.4)
+
+            MDBoxLayout:
+                size_hint_y: 0.2
+                orientation: 'horizontal'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                
+                    MDLabel:
+                        text: 'AI Difficulty (1-3)'
+                        halign: 'center'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+
+                    MDTextField:
+                        text: ''
+                        id: ai_diff
+                        pos_hint: {'center_x': .5,'center_y': .5}
+                        size_hint_x: (0.4)
+
+            MDBoxLayout:
+                size_hint_y: 0.2
+                orientation: 'horizontal'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                
+                    MDLabel:
+                        text: 'Randomize Starter'
+                        halign: 'center'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+
+                    MDSwitch:
+                        id: randomize
+                        active: False
+                        width: dp(35)
+                        pos_hint: {'center_x': .5,'center_y': .4}
+
+            MDBoxLayout:
+                size_hint_y: 0.2
+                orientation: 'horizontal'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                
+                    MDLabel:
+                        text: 'Use Custom Ship Sizes'
+                        halign: 'center'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+
+                    MDSwitch:
+                        id: custom_ships
+                        active: False
+                        width: dp(35)
+                        pos_hint: {'center_x': .5,'center_y': .4}
+
+            MDBoxLayout:
+                size_hint_y: 0.7
+                orientation: 'horizontal'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                
+                    MDLabel:
+                        text: 'Ship Sizes'
+                        halign: 'center'
+
+                    MDTextField:
+                        text: ''
+                        helper_text: 'Enter #'
+                        id: ship_size
+                        pos_hint: {'center_x': .5}
+                        size_hint_x: (0.4)
+
+                    MDBoxLayout:
+                        size_hint_y: 0.1
+
+                    MDRaisedButton:
+                        text: '+'
+                        elevation: 0
+                        on_press: root.add_list()
+                        pos_hint: {'center_x': .5}
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+
+                    MDScrollView:
+                        MDList:
+                            id: ship_list
+
+            MDBoxLayout:
+                size_hint_y: 0.1
+
+            MDRaisedButton:
+                text: "Apply | Ends Game"
+                elevation: 0
+                pos_hint: {'center_x': .5}
+                id: btn_apply_game
+                font_size: '25dp'
+                size_hint: (0.7,0.2)
+                on_release: root.verify_settings()
+                md_bg_color: "orange"
+
+        MDBoxLayout:
+            radius: [0, 25, 25, 0]
+            orientation: 'vertical'
+            spacing: dp(12)
+            md_bg_color: '#343131'
+
+            MDTopAppBar:
+                title: 'Other Options'
+                anchor_title: 'center'
+                elevation: 0
+                pos_hint: {'center_y': .2}
+                md_bg_color: '#fc5c65'
+
+            MDBoxLayout:
+                size_hint_y: 0.2
+                orientation: 'horizontal'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                
+                    MDLabel:
+                        text: 'Move Delay'
+                        halign: 'center'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+
+                    MDSlider:
+                        min: 0
+                        max: 5
+                        step: 1
+                        id: delay
+                        pos_hint: {'center_x': .5,'center_y': .5}
+                        size_hint_x: (0.6)
+
+            MDBoxLayout:
+                size_hint_y: 0.2
+                orientation: 'horizontal'
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                
+                    MDLabel:
+                        text: 'Game Icons'
+                        halign: 'center'
+
+                MDBoxLayout:
+                    orientation: 'horizontal'
+
+                    Button:
+                        background_normal: 'assets/crosshair.png'
+                        id: icon_0
+                        pos_hint: {'center_x': .5,'center_y': .5}
+                        on_press: root.clicked_icon(0)
+                        size_hint: (0.2,0.35)
+
+                    Button:
+                        background_normal: 'assets/circle.png'
+                        id: icon_1
+                        pos_hint: {'center_x': .5,'center_y': .5}
+                        on_press: root.clicked_icon(1)
+                        size_hint: (0.2,0.35)
+
+                    Button:
+                        background_normal: 'assets/square.png'
+                        id: icon_2
+                        pos_hint: {'center_x': .5,'center_y': .5}
+                        on_press: root.clicked_icon(2)
+                        size_hint: (0.2,0.35)
+
+                    MDBoxLayout:
+                        size_hint_x: 0.05
+
+            MDBoxLayout:
+                size_hint_y: 0.1
+
+            MDRaisedButton:
+                text: "Apply"
+                elevation: 0
+                pos_hint: {'center_x': .5}
+                font_size: '25dp'
+                size_hint: (0.7,0.07)
+                on_release: root.apply_extra_settings()
+                md_bg_color: "#fc5c65"
+
+<MultiplayerScreen>
+    name: 'sc_multi'
+
+    MDBoxLayout:
+        orientation: 'horizontal'
+        md_bg_color: '#4b6584'
+        padding: dp(12)
+        spacing: dp(12)
+
+        MDBoxLayout:
+            radius: [25, 0, 0, 25]
+            orientation: 'vertical'
+            md_bg_color: '#343131'
+
+            MDTopAppBar:
+                id: multi_disp
+                pos_hint: {'center_y': .2}
+                anchor_title: 'center'
+                font_style: 'H6'
+                elevation: 0
+                title: "You're Offline"
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                size_hint_y: .2
+
+            MDTextField:
+                hint_text: ' Name'
+                size_hint_x: .6
+                pos_hint: {"center_x": .5}
+                mode: "rectangle"
+                id: multi_name
+
+            MDLabel:
+                halign: 'center'
+                id: multi_helper
+                text: 'Please enter your name then select an option!'
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+
+                MDRaisedButton:
+                    id: host
+                    elevation: 0
+                    size_hint_x: .5
+                    size_hint_y: .5
+                    pos_hint: {"center_y": .6}
+                    text: 'Host Game'
+                    on_press: root.host()
+
+                MDRaisedButton:
+                    id: connect
+                    elevation: 0
+                    size_hint_y: .5
+                    size_hint_x: .5
+                    pos_hint: {"center_y": .6}
+                    text: 'Connect to Game'
+                    on_press: root.start_client()
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                size_hint_y: 2
+
+                MDTopAppBar:
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    halign: 'center'
+                    font_style: 'H6'
+                    elevation: 0
+                    title: 'Currently Connected'
+                    md_bg_color: '#fd9644'
+
+                MDLabel:
+                    id: connected_self
+                    halign: 'center'
+                    text: ''
+
+                MDLabel:
+                    id: connected_opp
+                    halign: 'center'
+                    text: ''
+
+        MDBoxLayout:
+            radius: [0, 25, 25, 0]
+            orientation: 'vertical'
+            spacing: dp(12)
+            md_bg_color: '#343131'
+
+            MDTopAppBar:
+                title: 'Multiplayer Settings'
+                anchor_title: 'center'
+                elevation: 0
+                pos_hint: {'top': 1}
+                md_bg_color: '#fc5c65'
+
+            MDBoxLayout:
+                size_hint_y: 0.2
+                orientation: 'vertical'
+
+            MDLabel:
+                halign: 'center'
+                font_style: 'H6'
+                text: 'TBD. Multiplayer uses classical settings for now.'
+
+            MDBoxLayout:
+                size_hint_y: 2
+
+
+<AboutScreen>
+    name: 'sc_about'
+
+    MDBoxLayout:
+        md_bg_color: '#4b6584'
+
+    MDBoxLayout:
+        size_hint: .965, .965
+        radius: [25, 25, 25, 25]
+        pos_hint: {"center_x": .5, "center_y": .5}
+        spacing: dp(12)
+        orientation: 'vertical'
+        md_bg_color: '#343131'
+
+        MDTopAppBar:
+            title: 'About'
+            anchor_title: 'center'
+            elevation: 0
+            pos_hint: {'center_y': .2}
+            md_bg_color: "#fd9644"
+
+        MDLabel:
+            size_hint_x: 0.8
+            pos_hint: {"center_x": .5, "center_y": .5}
+            halign: 'center'
+            font_style: 'H6'
+            text: 'Thanks for checking out my game! This was put together in my spare time and is my first real project! Hope you enjoyed it :)\n\n• Paul Belland'
+            
+
+        MDLabel:
+            halign: 'center'
+            font_style: 'H6'
+            text: 'Made using:\n\nKivyMD\nPython\nKivy'
+
+MDScreen:
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDBoxLayout:
+            adaptive_height: True
+            md_bg_color: '#263238'
+            padding: "12dp"
+
+            MDLabel:
+                text: "BS V1.6"
+                adaptive_height: True
+                pos_hint: {"center_y": .5}
+
+            MDIconButton:
+                id: icon_opponent
+                icon: 'desktop-tower'
+                halign: 'right'
+                size_hint: 0.00001,0.00001
+                pos_hint: {"top": 0.5}
+
+        MDBoxLayout:
+            orientation: 'horizontal'
+            MDNavigationRail:
+                anchor: "center"
+                md_bg_color: '#263238'
+
+                MDNavigationRailItem:
+                    text: "Game"
+                    icon: "gamepad"
+                    on_press: sc_manager.current = "sc_game"
+
+                MDNavigationRailItem:
+                    text: "Settings"
+                    icon: "tools"
+                    on_press: sc_manager.current = "sc_settings"
+
+                MDNavigationRailItem:
+                    text: "Multiplayer"
+                    icon: "account-group"
+                    on_press: sc_manager.current = "sc_multi"
+
+                MDNavigationRailItem:
+                    text: "About"
+                    icon: "information"
+                    on_press: sc_manager.current = "sc_about"
+        
+            ScreenManager:
+                id: sc_manager
+                transition: FadeTransition()
+
+                GameScreen:
+                SettingsScreen:
+                MultiplayerScreen:
+                AboutScreen:
+        
