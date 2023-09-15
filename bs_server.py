@@ -14,12 +14,13 @@ import pickle
 PORT = 5001
 
 class Server:
-    '''Basic Server Class for BattleShell'''
     def __init__(self,name):
         self.name = name
     
     def run(self):
-        '''Starts and awaits connection'''
+        '''
+        Starts and awaits connection
+        '''
         try:
             self.host = socket.gethostname()
             self.server = socket.socket()
@@ -32,7 +33,9 @@ class Server:
             return 'Server already running!'
         
     def search(self):
-        '''When called, tries to accept any incoming connections from other clients'''
+        '''
+        When called, tries to accept any incoming connections from other clients
+        '''
         try:
             self.conn, self.address = self.server.accept()  # accept new connection
             self.conn.setblocking(0)
@@ -42,7 +45,9 @@ class Server:
             return False
     
     def refresh(self):
-        '''When called, receives any packets passed from opponent'''
+        '''
+        When called, receives any packets passed from opponent
+        '''
         try:
             conn = self.conn
             raw_data = conn.recv(1024)
@@ -57,7 +62,9 @@ class Server:
             return None, None
             
     def send(self,identifier,data=None):
-        '''Sends any given data to opponent's client'''
+        '''
+        Sends any given data to opponent's client
+        '''
         payload = pickle.dumps([identifier,data])
         self.conn.send(payload)
         
