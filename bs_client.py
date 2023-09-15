@@ -18,7 +18,9 @@ class Client:
         self.name = name   # players username
     
     def run(self):
-        '''Attempts to connect to host if it exists'''
+        '''
+        Attempts to connect to host if it exists
+        '''
         try:
             self.host = socket.gethostname()  # as both code is running on same pc
             self.client_sock = socket.socket()  # instantiate
@@ -29,7 +31,8 @@ class Client:
             return 'No host could be found'
 
     def refresh(self):
-        '''When called, receives any packets passed from host
+        '''
+        When called, receives any packets passed from host
         Returns:
         - Identifier tag (helps identify what to do with info)
         - Data associated with identifier tag (ie List or String)
@@ -47,10 +50,14 @@ class Client:
             return None, None
             
     def send(self,identifier,data=None):
-        '''Sends any given data to host'''
+        '''
+        Sends any given data to host
+        '''
         payload = pickle.dumps([identifier,data])
         self.client_sock.send(payload)
         
     def close(self):
-        '''Kills the client connection to host'''
+        '''
+        Kills the client connection to host
+        '''
         self.client_sock.close()
