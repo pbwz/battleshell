@@ -1043,7 +1043,6 @@ class BattleShell(MDApp):
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.material_style = 'M3'
-        Window.size = (880, 650)
         self.root = Builder.load_file('BattleShell.kv')
         return self.root
     
